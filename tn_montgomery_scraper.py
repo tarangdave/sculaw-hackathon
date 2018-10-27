@@ -6,6 +6,9 @@ import csv
 from random import random
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.action_chains import ActionChains
+from lxml import html
+from lxml import etree
+import re
 
 from fake_useragent import UserAgent
 
@@ -21,7 +24,7 @@ user_agent = UserAgent()
 use this sleep so you see visually see the changes in the browser as it's automated; you can set it to 0 to run
 the script as fast as possible
 """
-sleep_seconds = 4
+sleep_seconds = 0
 
 
 def main():
@@ -44,6 +47,8 @@ def main():
         logger.info("loop through all items in two_letter_combos...")
         for two_letter_combo in two_letter_combos[0:1]:
             make_search_query(browser, two_letter_combo)
+            parse_page(browser)
+            next_page(browser)
 
             logger.info("sleep a bit...")
             sleep(random()*4)
@@ -89,6 +94,45 @@ def create_list_of_search_engine_queries():
     logger.info("first 2 letter combos in three_letter_combos: {0}".format(two_letter_combos[0:3]))
 
     return two_letter_combos
+
+
+def parse_page(browser):
+    page = browser.find_element_by_tag_name('html').get_attribute('innerHTML').replace('\n', '');
+    list1 = []
+    tree = etree.HTML(page)
+    table = tree.xpath("//table[@class='searchList']")
+    print(table)
+    for rows in table:
+        for row in rows:
+            list2 =[]
+            for col in row:
+                elem = col.xpath("./a")
+                lenVal = len(elem)
+                if lenVal==1:
+                    list2.append(elem[0].text)
+                else:
+                    list2.append(col.text)
+            list1.append(list2)
+
+    # print(list1)
+
+    # for subList in list1:
+    #     if len(subList)!=0:
+    #         # print re.sub('^,', '', c)
+    #         print(', '.join(subList).strip())
+    #         # for subElm in subList:
+    #             # print(subElm)
+
+
+
+def next_page(browser):
+    try:
+        logger.info("go to the next page...")
+        next_page = browser.find_element_by_name('ctl00$ctl00$cphContent$cphContentPaging$nextpage')
+        next_page.click()
+    except:
+        logger.info("no next page")
+    return None
 
 
 def make_search_query(browser, two_letter_combo_start):
