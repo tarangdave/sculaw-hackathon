@@ -2,7 +2,7 @@
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 import time
-driver = webdriver.Chrome("C:\\MONIL\\hackathon\\chromedriver.exe")
+driver = webdriver.Chrome("./chromedriver")
 driver.get("https://montgomery.tncrtinfo.com/crcaseList.aspx")
 table=None
 tr=None
@@ -22,8 +22,10 @@ def go_back(name):
             
 
 for first_number in range(65,90):
+    char1 = ""
     char1=chr(first_number)+""
     for second_number in range(65,90):
+        char2 = ""
         char2=chr(second_number)+""
         last_name=char1+char2
         last_name_element = driver.find_element_by_id("ctl00_ctl00_cphContent_cphSelectionCriteria_txtPartyLastName")
@@ -56,16 +58,27 @@ for first_number in range(65,90):
                 time.sleep(2)
                 charge_table_id=driver.find_element_by_id("ctl00_ctl00_cphContent_cphFormDetail_gridcharges")
                 charge_tr=charge_table_id.find_elements_by_tag_name('tr')
+                
 
-                charges_dict={}
+                charges_arr = []
+
                 for charge_tr_element in charge_tr[1:]:
+
+                    charges_dict={}
+
                     charge_td=charge_tr_element.find_elements_by_tag_name("td")
+
                     charges_dict['TCA Code']=charge_td[2].get_attribute('innerHTML')
                     charges_dict['TCA Desc']=charge_td[3].get_attribute('innerHTML')
                     charges_dict['Violation Date']=charge_td[5].get_attribute('innerHTML')
                     charges_dict['Disposition Date']=charge_td[6].get_attribute('innerHTML')
                     charges_dict['Disposition Type']=charge_td[7].get_attribute('innerHTML')
-                dict['Charges']=charges_dict
+
+                    charges_arr.append(charges_dict)
+
+                dict['Charges']=charges_arr
+
+                print dict
                 driver.back()    
             try:
                 Next=driver.find_element_by_id('ctl00_ctl00_cphContent_cphContentPaging_nextpage')
