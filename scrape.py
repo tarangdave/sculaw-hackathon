@@ -6,8 +6,7 @@ driver = webdriver.Chrome("./chromedriver")
 driver.get("https://montgomery.tncrtinfo.com/crcaseList.aspx")
 table=None
 tr=None
-dict={
-}
+dict={}
 last_name=None
 def go_back(name):
     driver.get("https://montgomery.tncrtinfo.com/crcaseList.aspx")
@@ -37,7 +36,7 @@ for first_number in range(65,90):
         while True:
             table=driver.find_element_by_id("ctl00_ctl00_cphContent_cphSearchResults_gridSearch")
             tr=table.find_elements_by_tag_name("tr")
-            count=1;
+            count=1
             length_of_tr=len(tr)
             for i in range(1,length_of_tr-1):
                 table=driver.find_element_by_id("ctl00_ctl00_cphContent_cphSearchResults_gridSearch")
@@ -78,7 +77,7 @@ for first_number in range(65,90):
 
                 dict['Charges']=charges_arr
 
-                print dict
+                print(dict)
                 driver.back()    
             try:
                 Next=driver.find_element_by_id('ctl00_ctl00_cphContent_cphContentPaging_nextpage')
