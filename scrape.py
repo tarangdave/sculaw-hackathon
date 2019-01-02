@@ -2,11 +2,16 @@
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 import time
+import json
+from pprint import pprint
 driver = webdriver.Chrome("./chromedriver")
 driver.get("https://montgomery.tncrtinfo.com/crcaseList.aspx")
 table=None
 tr=None
 dict={}
+init_dict = {"record": []}
+with open('criminal.json', 'w+') as f:
+    json.dump(init_dict,f)
 last_name=None
 def go_back(name):
     driver.get("https://montgomery.tncrtinfo.com/crcaseList.aspx")
@@ -77,7 +82,14 @@ for first_number in range(65,90):
 
                 dict['Charges']=charges_arr
 
-                print(dict)
+                # print(dict)
+                data = {}
+                with open('criminal.json', 'r') as infile:
+                    data = json.load(infile)
+                with open('criminal.json', 'w') as fs:
+                    data["record"].append(dict)
+                    json.dump(data, fs)
+
                 driver.back()    
             try:
                 Next=driver.find_element_by_id('ctl00_ctl00_cphContent_cphContentPaging_nextpage')
