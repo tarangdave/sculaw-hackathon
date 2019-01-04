@@ -4,6 +4,8 @@ from selenium.webdriver.common.keys import Keys
 import time
 import json
 from pprint import pprint
+import re
+
 driver = webdriver.Chrome("./chromedriver")
 driver.get("https://montgomery.tncrtinfo.com/crcaseList.aspx")
 table=None
@@ -72,11 +74,11 @@ for first_number in range(65,90):
 
                     charge_td=charge_tr_element.find_elements_by_tag_name("td")
 
-                    charges_dict['TCA Code']=charge_td[2].get_attribute('innerHTML')
-                    charges_dict['TCA Desc']=charge_td[3].get_attribute('innerHTML')
+                    charges_dict['TCA Code']=re.sub('[;]', '', charge_td[2].get_attribute('innerHTML'))
+                    charges_dict['TCA Desc']=re.sub('[;]', '', charge_td[3].get_attribute('innerHTML'))
                     charges_dict['Violation Date']=charge_td[5].get_attribute('innerHTML')
-                    charges_dict['Disposition Date']=charge_td[6].get_attribute('innerHTML')
-                    charges_dict['Disposition Type']=charge_td[7].get_attribute('innerHTML')
+                    charges_dict['Disposition Date']="NA" if charge_td[6].get_attribute('innerHTML')=="&nbsp;" else charge_td[6].get_attribute('innerHTML')
+                    charges_dict['Disposition Type']="NA" if charge_td[7].get_attribute('innerHTML')=="&nbsp;" else charge_td[7].get_attribute('innerHTML')
 
                     charges_arr.append(charges_dict)
 
