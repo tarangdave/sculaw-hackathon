@@ -28,13 +28,14 @@ def go_back(name):
             
 
 for first_number in range(65,90):
-    char1 = ""
     char1=chr(first_number)+""
     for second_number in range(65,90):
-        char2 = ""
         char2=chr(second_number)+""
+        last_name = ""
         last_name=char1+char2
+        driver.find_element_by_id("ctl00_ctl00_cphContent_cphSelectionCriteria_txtPartyLastName").clear()
         last_name_element = driver.find_element_by_id("ctl00_ctl00_cphContent_cphSelectionCriteria_txtPartyLastName")
+        last_name_element.send_keys("")
         last_name_element.send_keys(last_name)
         last_name_element.send_keys(Keys.RETURN)
         find_now=driver.find_element_by_id("ctl00_ctl00_cphContent_cphSelectionCriteria_cmdFindNow")
