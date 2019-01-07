@@ -61,37 +61,40 @@ for first_number in range(65,90):
                 time.sleep(2)
                 ul_id=driver.find_element_by_id('ctl00_ctl00_cphContent_cphTabbedBar_ultab')
                 li=ul_id.find_elements_by_tag_name('li')
-                li[1].click()
-                time.sleep(2)
-                charge_table_id=driver.find_element_by_id("ctl00_ctl00_cphContent_cphFormDetail_gridcharges")
-                charge_tr=charge_table_id.find_elements_by_tag_name('tr')
-                
+                if li[1].find_element_by_tag_name('a').get_attribute('innerHTML') != "Charges":
+                    pass
+                else:
+                    li[1].click()
+                    time.sleep(2)
+                    charge_table_id=driver.find_element_by_id("ctl00_ctl00_cphContent_cphFormDetail_gridcharges")
+                    charge_tr=charge_table_id.find_elements_by_tag_name('tr')
+                    
 
-                charges_arr = []
+                    charges_arr = []
 
-                for charge_tr_element in charge_tr[1:]:
+                    for charge_tr_element in charge_tr[1:]:
 
-                    charges_dict={}
+                        charges_dict={}
 
-                    charge_td=charge_tr_element.find_elements_by_tag_name("td")
+                        charge_td=charge_tr_element.find_elements_by_tag_name("td")
 
-                    charges_dict['TCA Code']=re.sub('[;]', '', charge_td[2].get_attribute('innerHTML'))
-                    charges_dict['TCA Desc']=re.sub('[;]', '', charge_td[3].get_attribute('innerHTML'))
-                    charges_dict['Violation Date']=charge_td[5].get_attribute('innerHTML')
-                    charges_dict['Disposition Date']="NA" if charge_td[6].get_attribute('innerHTML')=="&nbsp;" else charge_td[6].get_attribute('innerHTML')
-                    charges_dict['Disposition Type']="NA" if charge_td[7].get_attribute('innerHTML')=="&nbsp;" else charge_td[7].get_attribute('innerHTML')
+                        charges_dict['TCA Code']=re.sub('[;]', '', charge_td[2].get_attribute('innerHTML'))
+                        charges_dict['TCA Desc']=re.sub('[;]', '', charge_td[3].get_attribute('innerHTML'))
+                        charges_dict['Violation Date']=charge_td[5].get_attribute('innerHTML')
+                        charges_dict['Disposition Date']="NA" if charge_td[6].get_attribute('innerHTML')=="&nbsp;" else charge_td[6].get_attribute('innerHTML')
+                        charges_dict['Disposition Type']="NA" if charge_td[7].get_attribute('innerHTML')=="&nbsp;" else charge_td[7].get_attribute('innerHTML')
 
-                    charges_arr.append(charges_dict)
+                        charges_arr.append(charges_dict)
 
-                dict['Charges']=charges_arr
+                    dict['Charges']=charges_arr
 
-                # print(dict)
-                data = {}
-                with open('criminal.json', 'r') as infile:
-                    data = json.load(infile)
-                with open('criminal.json', 'w') as fs:
-                    data["record"].append(dict)
-                    json.dump(data, fs)
+                    # print(dict)
+                    data = {}
+                    with open('criminal.json', 'r') as infile:
+                        data = json.load(infile)
+                    with open('criminal.json', 'w') as fs:
+                        data["record"].append(dict)
+                        json.dump(data, fs)
 
                 driver.back()    
             try:
